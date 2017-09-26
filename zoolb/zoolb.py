@@ -2,6 +2,8 @@ import argparse
 import getpass
 import sys
 
+from zookeeper.client import ZKClient
+
 def zk():
 
 def main():
