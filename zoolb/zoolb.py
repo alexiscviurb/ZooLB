@@ -12,12 +12,16 @@ def main():
     # Parse arguments
     parser = argparse.ArgumentParser(
         description = "Módulo Python para gerenciamento automático de Load Balancers Backends.")
-    parser.add_argument('-H', '--hostname', action='store', dest='hostname',
+    parser.add_argument('--zkhost', action='store', dest='zkhost',
                         required = True,
-                        help = 'The hostname of the Cloudera Manager server.')
-    parser.add_argument('-p', action='store', dest='port', type=int,
-                        help = 'The port of the Cloudera Manager server. Defaults '
-                        'to 7180 (http) or 7183 (https).')
+                        help = 'The address and port of Zookeeper quorum')
+    parser.add_argument('--znode', action='store', dest='znode',
+                        help = 'The target Znode')
+    parser.add_argument('--backend-port', action='store', dest='backend-port',
+                        help='The backend Port')
+    parser.add_argument('--load-balance', action='store_const', dest='load-balance',
+                        const=True, default=False,
+                        help='Whether to use load-balance mode')
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
     args = parser.parse_args()
 
