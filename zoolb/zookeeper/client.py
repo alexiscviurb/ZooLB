@@ -1,5 +1,7 @@
 import logging
 import sys
+import time
+
 from kazoo.client import KazooClient
 from kazoo import handlers
 
@@ -15,9 +17,6 @@ class ZKClient:
             self.logger.error("5 seconds connection timeout")
             raise
 
-    def stop(self):
-            self.client.stop()
-
     def store_value(self, value, path):
         fmt_value = str(value).encode('utf-8')
         self.client.ensure_path(path)
@@ -32,3 +31,9 @@ class ZKClient:
             raise ValueError
         else:
             return int(data.decode('utf-8'))
+
+    def register_server(self, path):
+        self.client.create(path, ephemeral=True, makepath=True)
+        while True:
+            time.sleep(5)
+        self.client.stop()

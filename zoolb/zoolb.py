@@ -1,11 +1,10 @@
-import argparse
-import getpass
-import sys
 import os
-from zookeeper.client import ZKClient
+import argparse
+
+from backend import BkClient
+from lb import LbClient
 
 # Configuration
-DEFAULT_BACKEND_PORT = 8080
 DEFAULT_BACKEND_PORT = 8080
 DEFAULT_LB_PROVIDER = 'nginx'
 
@@ -29,8 +28,8 @@ def main():
                                    default=DEFAULT_BACKEND_PORT, metavar='PORT',
                                    help='The port of backend listen. Defaults to {0} '.format(DEFAULT_BACKEND_PORT))  
     arg_group_backend.add_argument('--backend-host', action='store', dest='backend_host',
-                                   default=DEFAULT_BACKEND_HOST, metavar='HOST',
-                                   help='The address/hostname of backend. Defaults to {0} '.format(DEFAULT_BACKEND_HOST))  
+                                   metavar='HOST', default=os.environ.get('BACKEND_HOST', None),
+                                   help='The address/hostname of backend. Defaults to hostname')
 
     arg_group_lb = parser.add_argument_group('Load Balance')
     arg_group_lb.add_argument('--lb-provider', action='store', dest='lb_provider',
@@ -45,7 +44,11 @@ def main():
     if not args.znode:
         exit(parser.error("the following arguments are required: --znode"))
 
-    print (args)
+    if args.mode == 'lb':
+        node = LbClient()
+    elif args.mode == 'backend':
+        node = BkClient(args.zkhost)
+        node.register_server(args.znode, args.backend_host, args.backend_port)
 
 if __name__ == '__main__':
     main()
