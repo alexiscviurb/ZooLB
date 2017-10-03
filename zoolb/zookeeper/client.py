@@ -1,6 +1,5 @@
 import logging
 import sys
-import time
 
 from kazoo.client import KazooClient
 from kazoo import handlers
@@ -34,6 +33,3 @@ class ZKClient:
 
     def register_server(self, path):
         self.client.create(path, ephemeral=True, makepath=True)
-        while True:
-            time.sleep(5)
-        self.client.stop()

@@ -1,3 +1,5 @@
+import time
+
 from socket import gethostname
 
 from zookeeper.client import ZKClient
@@ -15,3 +17,5 @@ class BkClient:
             host = self.get_hostname()
         str_path = '%s/%s:%s' % (znode, host, port)
         self.zk.register_server(str_path)
+        while True:
+            time.sleep(5)
